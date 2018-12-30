@@ -1,0 +1,1 @@
+module.exports.SEED = 't4jXs5gRvqGbZYLLq4pm';
