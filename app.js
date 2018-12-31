@@ -16,6 +16,11 @@ app.use(bodyParser.json());
 var appRoutes = require('./routes/index.routes');
 var usuarioRoutes = require('./routes/usuario.routes');
 var loginRoutes = require('./routes/login.routes');
+var hospitalRoutes = require('./routes/hospital.routes');
+var medicoRoutes = require('./routes/medico.routes');
+var busquedaRoutes = require('./routes/busqueda.routes');
+var uploadsRoutes = require('./routes/upload.routes');
+var imagenesRoutes = require('./routes/imagenes.routes');
 
 // Conexión a la DB
 var opciones = {
@@ -28,8 +33,13 @@ mongoose.connection.openUri('mongodb://localhost:27017/hospitalDB', opciones, (e
 });
 
 // Middleware de rutas
-app.use('/usuarios', usuarioRoutes);
+app.use('/usuario', usuarioRoutes);
 app.use('/login', loginRoutes);
+app.use('/hospital', hospitalRoutes);
+app.use('/medico', medicoRoutes);
+app.use('/busqueda', busquedaRoutes);
+app.use('/upload', uploadsRoutes);
+app.use('/img', imagenesRoutes);
 app.use('/', appRoutes);
 
 

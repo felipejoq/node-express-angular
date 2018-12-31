@@ -1,19 +1,26 @@
-var express         = require("express");
-var bcrypt          = require("bcryptjs");
-var jwt             = require('jsonwebtoken');
+var express = require("express");
+var bcrypt = require("bcryptjs");
+var jwt = require("jsonwebtoken");
 
-var mdAutenticacion = require('../middlewares/autenticate.middleware');
+var mdAutenticacion = require("../middlewares/autenticate.middleware");
 
-var app             = express();
-var Usuario         = require("../models/usuario.model");
+var app = express();
+var Usuario = require("../models/usuario.model");
 
 /**********************************************************************
  * Obtener la lista completa de usuarios
  **********************************************************************/
 app.get("/", (req, res, next) => {
+
+  var desde = req.query.desde || 0;
+  desde = Number(desde);
+
   // Usuario.find({}, "nombre email img role").exec((err, usuariosDB) => {
-  Usuario.find({}).exec((err, usuariosDB) => {
-  if (err) {
+  Usuario.find({})
+  .skip(desde)
+  .limit(5)
+  .exec((err, usuariosDB) => {
+    if (err) {
       return res.status(500).json({
         ok: false,
         mensaje: "Error cargando usuarios",
@@ -21,10 +28,24 @@ app.get("/", (req, res, next) => {
       });
     }
 
-    return res.status(200).json({
-      ok: true,
-      usuarios: usuariosDB
+    Usuario.countDocuments({}, (err, conteo) => {
+
+      if (err) {
+        return res.status(500).json({
+          ok: false,
+          mensaje: "Error cargando usuarios",
+          errors: err
+        });
+      }
+
+      res.status(200).json({
+        ok: true,
+        total: conteo,
+        usuarios: usuariosDB
+      });
     });
+
+    
   });
 });
 
@@ -80,7 +101,6 @@ app.put("/:id", mdAutenticacion.verificaToken, (req, res) => {
       });
     });
   });
-
 });
 
 /**********************************************************************
@@ -117,11 +137,10 @@ app.post("/", mdAutenticacion.verificaToken, (req, res) => {
 /**********************************************************************
  * Eliminar un usuario mediante su ID
  **********************************************************************/
-app.delete('/:id', mdAutenticacion.verificaToken, (req, res) => {
+app.delete("/:id", mdAutenticacion.verificaToken, (req, res) => {
   var id = req.params.id;
 
   Usuario.findByIdAndDelete(id, (err, usuarioEliminado) => {
-
     if (err) {
       return res.status(500).json({
         ok: false,
@@ -135,7 +154,7 @@ app.delete('/:id', mdAutenticacion.verificaToken, (req, res) => {
         ok: false,
         mensaje: "El usuario no existe",
         errors: {
-          message: 'El registro no existe'
+          message: "El registro no existe"
         }
       });
     }
@@ -144,9 +163,7 @@ app.delete('/:id', mdAutenticacion.verificaToken, (req, res) => {
       ok: true,
       usuario: usuarioEliminado
     });
-
   });
-
 });
 
 module.exports = app;
