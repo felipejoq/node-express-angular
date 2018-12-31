@@ -19,7 +19,8 @@ var usuarioSchema = new Schema({
   email: { type: String, unique: true, require: [true, "El correo es obligatorio."]},
   password: { type: String, required: [true, "El password es obligatorio."] },
   img: { type: String, required: false },
-  role: { type: String, required: true, default: "USER_ROLE", enum: rolesValidos }
+  role: { type: String, required: true, default: "USER_ROLE", enum: rolesValidos },
+  google: { type: Boolean, default: false }
 });
 
 //Quita el password cuando quiera retornarse a un JSON
