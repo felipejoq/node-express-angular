@@ -106,7 +106,7 @@ app.put("/:id", mdAutenticacion.verificaToken, (req, res) => {
 /**********************************************************************
  * Crear un nuevo usuario
  **********************************************************************/
-app.post("/", mdAutenticacion.verificaToken, (req, res) => {
+app.post("/", (req, res) => {
   // Obteniendo el objeto que se envía desde el cliente como un json
   body = req.body;
 
